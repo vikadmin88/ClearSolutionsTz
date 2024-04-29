@@ -1,0 +1,54 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Note Manager</title>
+    <link th:href="@{/css/index.css}" rel="stylesheet" />
+</head>
+<body class="container">
+<h1 class="title">Add note:</h1>
+<form class="form" action="">
+    <label class="label">Title:
+        <input type="text" name="title"/>
+    </label>
+    <label class="label">Content:
+        <textarea name="content" cols="30" rows="10"></textarea>
+    </label>
+    <button class="btn" type="submit">Add</button>
+</form>
+<div class="error-box">
+    <p>Error:</p>
+    <ul class="error-list"></ul>
+</div>
+<h2 class="title">List notes:</h2>
+<ul class="list"></ul>
+
+<!-- The Modal -->
+<div id="editModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Edit Note</h2>
+            <span class="close-span">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form class="form-edit" action="">
+                <label class="label">Title:
+                    <input type="hidden" data-id="" name="id"/>
+                    <input type="text" data-title="" name="title"/>
+                </label>
+                <label class="label">Content:
+                    <textarea name="content" data-content="" cols="30" rows="10"></textarea>
+                </label>
+                <div style="padding-top: 4px">
+                    <button class="btn" type="submit">Update</button>
+                    <button class="btn cancel-btn" type="button">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
