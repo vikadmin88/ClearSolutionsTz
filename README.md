@@ -2,9 +2,11 @@
 
 ### The task has two parts:
 
-      1. Using the resources listed below learn what is RESTful API and what are the best practices to implement it 
-      2. According to the requirements implement the RESTful API based on the web Spring Boot application: controller, 
-      responsible for the resource named Users. 
+      1. Using the resources listed below learn what is RESTful API and 
+            what are the best practices to implement it 
+      2. According to the requirements implement the RESTful API based on 
+            the web Spring Boot application: controller, 
+            responsible for the resource named Users. 
 
 #### Resources:
 
@@ -28,8 +30,8 @@ Testing | Spring
       2.2. Update one/some user fields
       2.3. Update all user fields
       2.4. Delete user
-      2.5. Search for users by birth date range. Add the validation which checks that “From” is less than “To”.  
-            Should return a list of objects
+      2.5. Search for users by birth date range. Add the validation which checks 
+            that “From” is less than “To”. Should return a list of objects
       3. Code is covered by unit tests using Spring 
       4. Code has error handling for REST
       5. API responses are in JSON format
