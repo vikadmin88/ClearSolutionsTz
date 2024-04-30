@@ -1,5 +1,7 @@
 ## Java practical test assignment
 
+### Fully functional Contact Book application. Client/Server, RESTful 
+
 ### The task has two parts:
 
       1. Using the resources listed below learn what is RESTful API and 
