@@ -15,66 +15,91 @@ import java.util.stream.Collectors;
 @Component
 public class UserMapper {
 
-    public List<User> toNoteEntities(Collection<UserDto> dtos) {
+    public List<User> toUserEntities(Collection<UserDto> dtos) {
         return dtos.stream()
-                .map(this::toNoteEntity)
+                .map(this::toUserEntity)
                 .collect(Collectors.toList());
     }
 
-    public User toNoteEntity(UserDto dto) {
-        User entity = new User();
-        entity.setId(dto.getId());
-        entity.setTitle(dto.getTitle());
-        entity.setContent(dto.getContent());
+    public User toUserEntity(UserDto dto) {
+        User entity = User.builder()
+                .id(dto.getId())
+                .firstName(dto.getFirstName())
+                .lastName(dto.getLastName())
+                .birthDate(dto.getBirthDate())
+                .email(dto.getEmail())
+                .phone(dto.getPhone())
+                .address(dto.getAddress())
+                .build();
         return entity;
     }
 
-    public List<UserDto> toNoteDtos(Collection<User> entities) {
+    public List<UserDto> toUserDtos(Collection<User> entities) {
         return entities.stream()
-                .map(this::toNoteDto)
+                .map(this::toUserDto)
                 .collect(Collectors.toList());
     }
 
-    public UserDto toNoteDto(User entity) {
-        UserDto dto = new UserDto();
-        dto.setId(entity.getId());
-        dto.setTitle(entity.getTitle());
-        dto.setContent(entity.getContent());
+    public UserDto toUserDto(User entity) {
+        UserDto dto = UserDto.builder()
+                .id(entity.getId())
+                .firstName(entity.getFirstName())
+                .lastName(entity.getLastName())
+                .birthDate(entity.getBirthDate())
+                .email(entity.getEmail())
+                .phone(entity.getPhone())
+                .address(entity.getAddress())
+                .build();
         return dto;
     }
 
-    public List<UserResponse> toNoteResponses(Collection<UserDto> dtos) {
+    public List<UserResponse> toUserResponses(Collection<UserDto> dtos) {
         return dtos.stream()
-                .map(this::toNoteResponse)
+                .map(this::toUserResponse)
                 .collect(Collectors.toList());
     }
 
-    public UserResponse toNoteResponse(UserDto dto) {
-        UserResponse response = new UserResponse();
-        response.setId(dto.getId());
-        response.setTitle(dto.getTitle());
-        response.setContent(dto.getContent());
+    public UserResponse toUserResponse(UserDto dto) {
+        UserResponse response = UserResponse.builder()
+                .id(dto.getId())
+                .firstName(dto.getFirstName())
+                .lastName(dto.getLastName())
+                .birthDate(dto.getBirthDate())
+                .email(dto.getEmail())
+                .phone(dto.getPhone())
+                .address(dto.getAddress())
+                .build();
         return response;
     }
 
-    public List<UserDto> requestsToNoteDtos(Collection<CreateUserRequest> requests) {
+    public List<UserDto> requestsToUserDtos(Collection<CreateUserRequest> requests) {
         return requests.stream()
-                .map(this::toNoteDto)
+                .map(this::toUserDto)
                 .collect(Collectors.toList());
     }
 
-    public UserDto toNoteDto(CreateUserRequest request) {
-        UserDto dto = new UserDto();
-        dto.setTitle(request.getTitle());
-        dto.setContent(request.getContent());
+    public UserDto toUserDto(CreateUserRequest request) {
+        UserDto dto = UserDto.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .birthDate(request.getBirthDate())
+                .email(request.getEmail())
+                .phone(request.getPhone())
+                .address(request.getAddress())
+                .build();
         return dto;
     }
 
-    public UserDto toNoteDto(UUID id, UpdateUserRequest request) {
-        UserDto dto = new UserDto();
-        dto.setId(id);
-        dto.setTitle(request.getTitle());
-        dto.setContent(request.getContent());
+    public UserDto toUserDto(UUID id, UpdateUserRequest request) {
+        UserDto dto = UserDto.builder()
+                .id(id)
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .birthDate(request.getBirthDate())
+                .email(request.getEmail())
+                .phone(request.getPhone())
+                .address(request.getAddress())
+                .build();
         return dto;
     }
 }

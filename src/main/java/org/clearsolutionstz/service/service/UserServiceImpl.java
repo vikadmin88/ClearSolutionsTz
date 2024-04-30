@@ -24,43 +24,43 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> listAll() {
-        log.info("Getting all notes from repository");
-        return userMapper.toNoteDtos(userRepository.findAll());
+        log.info("Getting all users from repository");
+        return userMapper.toUserDtos(userRepository.findAll());
     }
 
     @Override
     public UserDto add(UserDto note) {
-        log.info("Adding note: {}", note);
-        User entity = userMapper.toNoteEntity(note);
+        log.info("Adding user: {}", note);
+        User entity = userMapper.toUserEntity(note);
         entity.setId(null);
-        return userMapper.toNoteDto(userRepository.save(userMapper.toNoteEntity(note)));
+        return userMapper.toUserDto(userRepository.save(userMapper.toUserEntity(note)));
     }
 
     @Override
     public void deleteById(UUID id) throws UserNotFoundException {
-        log.info("Deleting note with id: {}", id);
+        log.info("Deleting user with id: {}", id);
         if (Objects.isNull(id)) {
-            throw new UserNotFoundException("Not found note Id");
+            throw new UserNotFoundException("Not found user Id");
         }
         if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException("Not found note Id: " + id);
+            throw new UserNotFoundException("Not found user Id: " + id);
         }
         userRepository.deleteById(id);
     }
 
     @Override
     public void update(UserDto note) throws UserNotFoundException {
-        log.info("Updating note: {}", note);
+        log.info("Updating user: {}", note);
         if (!userRepository.existsById(note.getId())) {
-            throw new UserNotFoundException("Not found note Id: " + note.getId());
+            throw new UserNotFoundException("Not found user Id: " + note.getId());
         }
-        userRepository.save(userMapper.toNoteEntity(note));
+        userRepository.save(userMapper.toUserEntity(note));
     }
 
     @Override
     public UserDto getById(UUID id) throws UserNotFoundException {
-        log.info("Getting note with id: {}", id);
+        log.info("Getting user with id: {}", id);
         Optional<User> opNote = userRepository.findById(id);
-        return userMapper.toNoteDto(opNote.orElseThrow(() -> new UserNotFoundException(String.format("User with id %s not found", id))));
+        return userMapper.toUserDto(opNote.orElseThrow(() -> new UserNotFoundException(String.format("User with id %s not found", id))));
     }
 }

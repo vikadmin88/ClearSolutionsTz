@@ -99,6 +99,8 @@ img {
 }
 
 .list-item {
+    /*display: flex;*/
+    /*justify-content: flex-start;*/
     border-radius: 5px;
     border: 2px solid;
     padding: 8px;
@@ -114,14 +116,15 @@ img {
     margin-bottom: 4px;
 }
 
-.item-content {
-    margin-bottom: 16px;
+.item-el {
+    /*margin-bottom: 16px;*/
 }
 
 .btn {
     width: 80px;
     padding: 6px 12px;
     margin-right: 4px;
+    margin-top: 8px;
     border-radius: 5px;
 }
 

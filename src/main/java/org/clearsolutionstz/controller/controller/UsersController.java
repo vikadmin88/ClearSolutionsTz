@@ -33,14 +33,14 @@ public class UsersController {
     public ResponseEntity<List<UserResponse>> userList() {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(userMapper.toNoteResponses(userService.listAll()));
+            .body(userMapper.toUserResponses(userService.listAll()));
     }
 
     @GetMapping("/search")
     public ResponseEntity<List<UserResponse>> userSearch() {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(userMapper.toNoteResponses(userService.listAll()));
+            .body(userMapper.toUserResponses(userService.listAll()));
     }
 
     @GetMapping("/edit")
@@ -48,22 +48,22 @@ public class UsersController {
         UserDto userDto = userService.getById(id);
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
-                .body(userMapper.toNoteResponse(userDto));
+                .body(userMapper.toUserResponse(userDto));
     }
 
     @PutMapping("/edit")
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(
         @RequestBody @Valid @NotNull UpdateUserRequest request) throws UserNotFoundException {
-        userService.update(userMapper.toNoteDto(request.getId(), request));
+        userService.update(userMapper.toUserDto(request.getId(), request));
     }
 
     @PostMapping("/create")
     public ResponseEntity<UserResponse> createUser(@Valid @NotNull @RequestBody CreateUserRequest request) {
-        UserDto newNote = userService.add(userMapper.toNoteDto(request));
+        UserDto newNote = userService.add(userMapper.toUserDto(request));
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userMapper.toNoteResponse(newNote));
+                .body(userMapper.toUserResponse(newNote));
     }
 
     @DeleteMapping("/delete")

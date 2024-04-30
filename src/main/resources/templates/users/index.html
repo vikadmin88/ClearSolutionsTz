@@ -5,13 +5,25 @@
     <link th:href="@{/css/index.css}" rel="stylesheet" />
 </head>
 <body class="container">
-<h1 class="title">Add note:</h1>
+<h1 class="title">Add User:</h1>
 <form class="form" action="">
-    <label class="label">Title:
-        <input type="text" name="title"/>
+    <label class="label">First Name:
+        <input type="text" name="firstName" data-add-firstname required/>
     </label>
-    <label class="label">Content:
-        <textarea name="content" cols="30" rows="10"></textarea>
+    <label class="label">Last Name:
+        <input type="text" name="lastName" data-add-lastname required/>
+    </label>
+    <label class="label">Birth Date:
+        <input type="date" name="birthDate" value="" data-add-birthdate max="2024-05-01" required/>
+    </label>
+    <label class="label">Email:
+        <input type="email" name="email" data-add-email required/>
+    </label>
+    <label class="label">Phone:
+        <input type="tel" pattern="\d{3}-\d{3}-\d{4}" data-add-phone name="phone" placeholder="XXX-XXX-XXXX"/>
+    </label>
+    <label class="label">Address:
+        <input type="text" name="address" value="" data-add-address/>
     </label>
     <button class="btn" type="submit">Add</button>
 </form>
@@ -19,7 +31,7 @@
     <p>Error:</p>
     <ul class="error-list"></ul>
 </div>
-<h2 class="title">List notes:</h2>
+<h2 class="title">List Users:</h2>
 <ul class="list"></ul>
 
 <!-- The Modal -->
@@ -28,17 +40,29 @@
     <!-- Modal content -->
     <div class="modal-content">
         <div class="modal-header">
-            <h2>Edit Note</h2>
+            <h2>Edit User</h2>
             <span class="close-span">&times;</span>
         </div>
         <div class="modal-body">
             <form class="form-edit" action="">
-                <label class="label">Title:
-                    <input type="hidden" data-id="" name="id"/>
-                    <input type="text" data-title="" name="title"/>
+                <input type="hidden" name="id" data-edit-id/>
+                <label class="label">First Name:
+                    <input type="text" name="firstName" data-edit-firstname required/>
                 </label>
-                <label class="label">Content:
-                    <textarea name="content" data-content="" cols="30" rows="10"></textarea>
+                <label class="label">Last Name:
+                    <input type="text" name="lastName" data-edit-lastname required/>
+                </label>
+                <label class="label">Birth Date:
+                    <input type="date" name="birthDate" value="" data-edit-birthdate max="2024-05-01" required/>
+                </label>
+                <label class="label">Email:
+                    <input type="email" name="email" data-edit-email required/>
+                </label>
+                <label class="label">Phone:
+                    <input type="tel" pattern="\d{3}-\d{3}-\d{4}" data-edit-phone name="phone" placeholder="XXX-XXX-XXXX"/>
+                </label>
+                <label class="label">Address:
+                    <input type="text" name="address" value="" data-edit-address/>
                 </label>
                 <div style="padding-top: 4px">
                     <button class="btn" type="submit">Update</button>
