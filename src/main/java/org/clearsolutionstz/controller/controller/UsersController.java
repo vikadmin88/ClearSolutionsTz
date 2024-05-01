@@ -4,9 +4,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.clearsolutionstz.controller.request.SearchUsersRequest;
 import org.clearsolutionstz.controller.response.UserResponse;
 import org.clearsolutionstz.service.dto.UserDto;
-import org.clearsolutionstz.service.exception.UserAgeRestrictionException;
+import org.clearsolutionstz.service.exception.UserDataRestrictionException;
 import org.clearsolutionstz.service.exception.UserNotFoundException;
 import org.clearsolutionstz.service.mapper.UserMapper;
 import org.clearsolutionstz.service.service.UserService;
@@ -37,11 +38,12 @@ public class UsersController {
             .body(userMapper.toUserResponses(userService.listAll()));
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<UserResponse>> userSearch() {
+    @PostMapping("/search")
+    public ResponseEntity<List<UserResponse>> getUsersByBirthDateRange(
+            @NotNull @Valid @RequestBody SearchUsersRequest request) throws UserDataRestrictionException {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(userMapper.toUserResponses(userService.listAll()));
+            .body(userMapper.toUserResponses(userService.getByBirthDateBetween(request.getStartDate(), request.getEndDate())));
     }
 
     @GetMapping("/edit")
@@ -55,12 +57,12 @@ public class UsersController {
     @PutMapping("/edit")
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(
-        @RequestBody @Valid @NotNull UpdateUserRequest request) throws UserNotFoundException, UserAgeRestrictionException {
+            @Valid @NotNull @RequestBody UpdateUserRequest request) throws UserNotFoundException, UserDataRestrictionException {
         userService.update(userMapper.toUserDto(request.getId(), request));
     }
 
     @PostMapping("/create")
-    public ResponseEntity<UserResponse> createUser(@Valid @NotNull @RequestBody CreateUserRequest request) throws UserAgeRestrictionException {
+    public ResponseEntity<UserResponse> createUser(@Valid @NotNull @RequestBody CreateUserRequest request) throws UserDataRestrictionException {
         UserDto newNote = userService.add(userMapper.toUserDto(request));
         return ResponseEntity
                 .status(HttpStatus.CREATED)

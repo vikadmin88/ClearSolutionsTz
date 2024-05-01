@@ -91,6 +91,32 @@ img {
     padding: 6px 8px;
 }
 
+.form-search {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.label-search {
+    display: flex;
+    flex-direction: column;
+}
+
+.label-search input {
+    height: 40px;
+    border-radius: 5px;
+    padding: 6px 8px;
+    width: 200px;
+}
+.btn-search {
+    width: 80px;
+    height: 40px;
+    /*padding: 6px 12px;*/
+    /*margin-right: 4px;*/
+    /*margin-top: 8px;*/
+    /*border-radius: 5px;*/
+}
+
 .list {
     display: flex;
     flex-wrap: wrap;

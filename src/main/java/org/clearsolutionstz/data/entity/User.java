@@ -3,7 +3,6 @@ package org.clearsolutionstz.data.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -38,7 +37,6 @@ public class User {
     @Column(name = "birth_date")
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @Past(message = "Date must be in the past")
     private LocalDate birthDate;
 
     @Column

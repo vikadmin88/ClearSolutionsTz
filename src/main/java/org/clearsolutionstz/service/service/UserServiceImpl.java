@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.clearsolutionstz.data.entity.User;
 import org.clearsolutionstz.data.repository.UserRepository;
 import org.clearsolutionstz.service.dto.UserDto;
-import org.clearsolutionstz.service.exception.UserAgeRestrictionException;
+import org.clearsolutionstz.service.exception.UserDataRestrictionException;
 import org.clearsolutionstz.service.exception.UserNotFoundException;
 import org.clearsolutionstz.service.mapper.UserMapper;
 import org.springframework.core.env.Environment;
@@ -34,10 +34,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto add(UserDto user) throws UserAgeRestrictionException {
+    public List<UserDto> getByBirthDateBetween(LocalDate startDate, LocalDate endDate) throws UserDataRestrictionException {
+        log.info("Getting users by birthdate between {} and {}", startDate, endDate);
+        if (endDate.isBefore(startDate)) {
+            throw new UserDataRestrictionException("From date of birth must be before To date of birth");
+        }
+        return userMapper.toUserDtos(userRepository.findByBirthDateBetween(startDate, endDate));
+    }
+
+    @Override
+    public UserDto add(UserDto user) throws UserDataRestrictionException {
         log.info("Adding user: {}", user);
-        if (isUserAgeNotValid(user)) {
-            throw new UserAgeRestrictionException("User age less than required");
+        if (!isUserAgeValid(user)) {
+            throw new UserDataRestrictionException("User age less than required");
         }
         User entity = userMapper.toUserEntity(user);
         entity.setId(null);
@@ -45,13 +54,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(UserDto user) throws UserNotFoundException, UserAgeRestrictionException {
+    public void update(UserDto user) throws UserNotFoundException, UserDataRestrictionException {
         log.info("Updating user: {}", user);
         if (!userRepository.existsById(user.getId())) {
             throw new UserNotFoundException("Not found user Id: " + user.getId());
         }
-        if (isUserAgeNotValid(user)) {
-            throw new UserAgeRestrictionException("User age less than required");
+        if (!isUserAgeValid(user)) {
+            throw new UserDataRestrictionException("User age less than required");
         }
         userRepository.save(userMapper.toUserEntity(user));
     }
@@ -75,11 +84,11 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDto(opUser.orElseThrow(() -> new UserNotFoundException(String.format("User with id %s not found", id))));
     }
 
-    private boolean isUserAgeNotValid(UserDto user) {
+    private boolean isUserAgeValid(UserDto user) {
         int ageRestrict = Integer.parseInt(Objects.requireNonNull(env.getProperty("user.settings.age")));
         int userAge = Period.between(user.getBirthDate(), LocalDate.now()).getYears();
         log.info("Checking user age. min age {} User age: {}", ageRestrict, userAge);
-        return userAge < ageRestrict;
+        return userAge >= ageRestrict;
     }
 
 }

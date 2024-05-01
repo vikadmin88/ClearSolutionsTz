@@ -5,6 +5,7 @@ const errorBox = document.querySelector(".error-box");
 const errorList = document.querySelector(".error-list");
 const formAdd = document.querySelector(".form");
 const formEdit = document.querySelector(".form-edit");
+const formSearch = document.querySelector(".form-search");
 const modal = document.querySelector("#editModal");
 const spanCloseModal = document.querySelector(".close-span");
 const btnCloseModal = document.querySelector(".cancel-btn");
@@ -16,6 +17,36 @@ paramsName.map(param => {
     fieldsAdd[param] = document.querySelector("[data-add-" + `${param.toLowerCase()}` + "]");
     fieldsEdit[param] = document.querySelector("[data-edit-" + `${param.toLowerCase()}` + "]");
 });
+
+
+async function searchUsers(searchParams) {
+    clearErrorBox();
+    const url = `${baseEndPoint}/search`;
+    const params = {
+        method: 'POST',
+        headers: new Headers({'Content-Type': 'application/json; charset=UTF-8'}),
+        body: JSON.stringify(searchParams),
+    }
+    let response = await fetch(url, params);
+
+    if (response.ok) {
+        buildUserListBySearch(await response.json());
+    } else {
+        errorBox.style.display = "block";
+        buildErrorList(await response.json());
+    }
+}
+
+const onFormSearchSubmit = (e) => {
+    e.preventDefault();
+    const dataParams= {
+        startDate: formSearch.elements.startDate.value.trim(),
+        endDate: formSearch.elements.endDate.value.trim(),
+    };
+    searchUsers(dataParams);
+}
+
+formSearch.addEventListener("submit", onFormSearchSubmit);
 
 
 async function editUser(id) {
@@ -125,6 +156,10 @@ const buildUserList = (users) => {
     userList.insertAdjacentHTML("beforeend", users.map(fillUserList).join(""));
 }
 
+const buildUserListBySearch = (users) => {
+    userList.innerHTML = users.map(fillUserList).join("");
+}
+
 const fillUserList = ({id, firstName, lastName, birthDate, email, phone, address}) => {
     return `
     <li class="list-item">
@@ -154,18 +189,27 @@ async function getUsers() {
     }
 }
 
-const buildErrorList = ({errors}) => {
-
-    if (Array.isArray(errors)) {
-        errorList.insertAdjacentHTML("beforeend", errors.map(error => {
+const buildErrorList = (errResp) => {
+    if (!errResp) return;
+    // entity validations errors
+    if (typeof errResp?.errors === 'object' && !Array.isArray(errResp.errors)) {
+            Object.keys(errResp.errors).forEach(key => {
+                errorList.insertAdjacentHTML("beforeend", errResp.errors[key].map(error => {
+                    return `<li><p>${key}</p>${error}</li>`;
+                }).join(""));
+            });
+    // user manual errors
+    } else if (Array.isArray(errResp.errors)) {
+        errorList.insertAdjacentHTML("beforeend", errResp.errors.map(error => {
             return `<li>${error}</li>`;
         }).join(""));
-    } else {
-        Object.keys(errors).forEach(key => {
-            errorList.insertAdjacentHTML("beforeend", errors[key].map(error => {
-                return `<li><p>${key}</p>${error}</li>`;
-            }).join(""));
-        })
+    // other errors
+    } else if (errResp.hasOwnProperty("error") && errResp.hasOwnProperty("status")) {
+            errorList.insertAdjacentHTML("beforeend",
+                `<li><p>Error</p>${errResp.error}</li>
+                 <li><p>Message</p>${errResp.message}</li>
+                 <li><p>Status</p>${errResp.status}</li>`
+            );
     }
 }
 
