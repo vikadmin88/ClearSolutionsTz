@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.clearsolutionstz.controller.response.UserResponse;
 import org.clearsolutionstz.service.dto.UserDto;
+import org.clearsolutionstz.service.exception.UserAgeRestrictionException;
 import org.clearsolutionstz.service.exception.UserNotFoundException;
 import org.clearsolutionstz.service.mapper.UserMapper;
 import org.clearsolutionstz.service.service.UserService;
@@ -54,12 +55,12 @@ public class UsersController {
     @PutMapping("/edit")
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(
-        @RequestBody @Valid @NotNull UpdateUserRequest request) throws UserNotFoundException {
+        @RequestBody @Valid @NotNull UpdateUserRequest request) throws UserNotFoundException, UserAgeRestrictionException {
         userService.update(userMapper.toUserDto(request.getId(), request));
     }
 
     @PostMapping("/create")
-    public ResponseEntity<UserResponse> createUser(@Valid @NotNull @RequestBody CreateUserRequest request) {
+    public ResponseEntity<UserResponse> createUser(@Valid @NotNull @RequestBody CreateUserRequest request) throws UserAgeRestrictionException {
         UserDto newNote = userService.add(userMapper.toUserDto(request));
         return ResponseEntity
                 .status(HttpStatus.CREATED)

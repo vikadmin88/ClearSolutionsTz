@@ -1,5 +1,6 @@
 package org.clearsolutionstz.controller.exception;
 
+import org.clearsolutionstz.service.exception.UserAgeRestrictionException;
 import org.clearsolutionstz.service.exception.UserNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,12 +35,18 @@ public class GlobalExceptionHandler{
     }
 
     @ExceptionHandler(value = {UserNotFoundException.class})
-    public ResponseEntity<Map<String, List<String>>> noteNotFoundException(UserNotFoundException ex) {
+    public ResponseEntity<Map<String, List<String>>> userNotFoundException(UserNotFoundException ex) {
         Map<String, List<String>> map = new HashMap<>();
         map.put("errors", Collections.singletonList(ex.getMessage()));
         return new ResponseEntity<>(map, new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(value = {UserAgeRestrictionException.class})
+    public ResponseEntity<Map<String, List<String>>> userAgeRestrictionException(UserAgeRestrictionException ex) {
+        Map<String, List<String>> map = new HashMap<>();
+        map.put("errors", Collections.singletonList(ex.getMessage()));
+        return new ResponseEntity<>(map, new HttpHeaders(), HttpStatus.NOT_FOUND);
+    }
 
     private Map<String, Map<String, List<String>>> getErrorsMap(Map<String, List<String>> errors) {
         Map<String, Map<String, List<String>>> errorResponse = new HashMap<>();

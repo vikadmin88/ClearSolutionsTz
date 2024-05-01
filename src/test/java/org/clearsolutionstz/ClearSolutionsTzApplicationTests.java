@@ -1,5 +1,8 @@
 package org.clearsolutionstz;
 
+import jakarta.validation.ConstraintViolationException;
+import org.clearsolutionstz.data.entity.User;
+import org.clearsolutionstz.service.exception.UserAgeRestrictionException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +46,7 @@ class ClearSolutionsTzApplicationTests {
         user = new UserDto();
         user.setFirstName("Vik");
         user.setLastName("Tor");
-        user.setBirthDate(LocalDate.now());
+        user.setBirthDate(LocalDate.now().minusYears(18));
         user.setEmail("e@mail.com");
         user.setPhone("111-222-3333");
         user.setAddress("Address 33333");
@@ -56,7 +59,7 @@ class ClearSolutionsTzApplicationTests {
     }
 
     @Test
-    void testAddUser() {
+    void testAddUser() throws UserAgeRestrictionException {
         //When
         UserDto userObj = userService.add(user);
 
@@ -65,7 +68,7 @@ class ClearSolutionsTzApplicationTests {
     }
 
     @Test
-    void testGetById() throws UserNotFoundException {
+    void testGetById() throws UserNotFoundException, UserAgeRestrictionException {
         //When
         user.setFirstName("TEST");
         UserDto userAdded = userService.add(user);
@@ -77,7 +80,7 @@ class ClearSolutionsTzApplicationTests {
     }
 
     @Test
-    void testUpdate() throws UserNotFoundException {
+    void testUpdate() throws UserNotFoundException, UserAgeRestrictionException {
         //When
         UserDto userAdded = userService.add(user);
         userAdded.setFirstName("UPDATED");
@@ -90,7 +93,7 @@ class ClearSolutionsTzApplicationTests {
     }
 
     @Test
-    void testDelete() throws UserNotFoundException {
+    void testDelete() throws UserNotFoundException, UserAgeRestrictionException {
         //When
         UserDto userAdded = userService.add(user);
         List<UserDto> listUsers = userService.listAll();
@@ -106,7 +109,7 @@ class ClearSolutionsTzApplicationTests {
     }
 
     @Test
-    void testListAll() {
+    void testListAll() throws UserAgeRestrictionException {
         //When
         userService.add(user);
         List<UserDto> listUsers = userService.listAll();
@@ -137,5 +140,18 @@ class ClearSolutionsTzApplicationTests {
         Assertions.assertThrows(UserNotFoundException.class, () -> userService.getById(id));
     }
 
+    @Test
+    void testAddUserAgeRestrictionException() {
+        //When-Then
+        user.setBirthDate(LocalDate.now());
+        Assertions.assertThrows(UserAgeRestrictionException.class, () -> userService.add(user));
+    }
 
+    @Test
+    void testUpdateUserAgeRestrictionException() throws UserAgeRestrictionException {
+        //When-Then
+        UserDto userDto = userService.add(user);
+        userDto.setBirthDate(LocalDate.now());
+        Assertions.assertThrows(UserAgeRestrictionException.class, () -> userService.update(userDto));
+    }
 }

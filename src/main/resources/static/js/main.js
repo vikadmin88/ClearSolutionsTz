@@ -23,9 +23,7 @@ async function editUser(id) {
     const url = `${baseEndPoint}/edit?id=${id}`;
     const params = {
         method: 'GET',
-        headers: new Headers({
-            'Content-Type': 'application/json; charset=UTF-8'
-        })
+        headers: new Headers({'Content-Type': 'application/json; charset=UTF-8'})
     }
     let response = await fetch(url, params);
 
@@ -62,9 +60,7 @@ async function updateUser(dataParams) {
     const params = {
         method: 'PUT',
         body: JSON.stringify(dataParams),
-        headers: new Headers({
-            'Content-Type': 'application/json; charset=UTF-8'
-        })
+        headers: new Headers({'Content-Type': 'application/json; charset=UTF-8'})
     }
     let response = await fetch(url, params);
 
@@ -77,7 +73,6 @@ async function updateUser(dataParams) {
     }
 }
 
-
 const onFormAddSubmit = (e) => {
     e.preventDefault();
     const dataParams= {};
@@ -86,9 +81,7 @@ const onFormAddSubmit = (e) => {
             dataParams[key] = formAdd.elements[key].value.trim();
         }
     });
-
     addUser(dataParams);
-    e.currentTarget.reset();
 }
 
 formAdd.addEventListener("submit", onFormAddSubmit);
@@ -99,14 +92,13 @@ async function addUser(dataParams) {
     const params = {
         method: 'POST',
         body: JSON.stringify(dataParams),
-        headers: new Headers({
-            'Content-Type': 'application/json; charset=UTF-8'
-        })
+        headers: new Headers({'Content-Type': 'application/json; charset=UTF-8'})
     }
     let response = await fetch(url, params);
 
     if (response.ok) {
         buildUserList([await response.json()]);
+        formAdd.reset();
     } else {
         errorBox.style.display = "block";
         buildErrorList(await response.json());
@@ -118,9 +110,7 @@ async function deleteUser(id) {
     const params = {
         method: 'DELETE',
         body: JSON.stringify({id: id}),
-        headers: new Headers({
-            'Content-Type': 'application/json; charset=UTF-8'
-        })
+        headers: new Headers({'Content-Type': 'application/json; charset=UTF-8'})
     }
     let response = await fetch(url, params);
 
