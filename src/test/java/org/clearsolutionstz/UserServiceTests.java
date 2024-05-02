@@ -139,4 +139,11 @@ public class UserServiceTests {
         Assertions.assertThrows(UserDataRestrictionException.class, () -> userService.update(userDto));
     }
 
+    @Test
+    void testSearchStartBDateEndBDateException() {
+        //When-Then
+        user.setBirthDate(LocalDate.now());
+        Assertions.assertThrows(UserDataRestrictionException.class, () -> userService.getByBirthDateBetween(LocalDate.now(), LocalDate.now().minusDays(1)));
+    }
+
 }
