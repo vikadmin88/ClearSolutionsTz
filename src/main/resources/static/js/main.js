@@ -14,8 +14,8 @@ paramsName = ['id', 'firstName', 'lastName', 'birthDate', 'email', 'phone', 'add
 const fieldsAdd = {};
 const fieldsEdit = {};
 paramsName.map(param => {
-    fieldsAdd[param] = document.querySelector("[data-add-" + `${param.toLowerCase()}` + "]");
-    fieldsEdit[param] = document.querySelector("[data-edit-" + `${param.toLowerCase()}` + "]");
+    fieldsAdd[param] = document.querySelector("[data-add-" + param.toLowerCase() + "]");
+    fieldsEdit[param] = document.querySelector("[data-edit-" + param.toLowerCase() + "]");
 });
 
 
@@ -30,9 +30,8 @@ async function searchUsers(searchParams) {
     let response = await fetch(url, params);
 
     if (response.ok) {
-        buildUserListBySearch(await response.json());
+        buildUserListReplace(await response.json());
     } else {
-        errorBox.style.display = "block";
         buildErrorList(await response.json());
     }
 }
@@ -65,7 +64,6 @@ async function editUser(id) {
         })
         modal.style.display = "block";
     } else {
-        errorBox.style.display = "block";
         buildErrorList(await response.json());
     }
 }
@@ -97,9 +95,8 @@ async function updateUser(dataParams) {
 
     if (response.ok) {
         modal.style.display = "none";
-        location.href=`${baseEndPoint}`;
+        replaceUserCard(dataParams);
     } else {
-        errorBox.style.display = "block";
         buildErrorList(await response.json());
     }
 }
@@ -128,15 +125,15 @@ async function addUser(dataParams) {
     let response = await fetch(url, params);
 
     if (response.ok) {
-        buildUserList([await response.json()]);
+        buildUserListAppend([await response.json()]);
         formAdd.reset();
     } else {
-        errorBox.style.display = "block";
         buildErrorList(await response.json());
     }
 }
 
 async function deleteUser(id) {
+    clearErrorBox();
     const url = `${baseEndPoint}/delete`;
     const params = {
         method: 'DELETE',
@@ -146,23 +143,28 @@ async function deleteUser(id) {
     let response = await fetch(url, params);
 
     if (response.ok) {
-        location.href=`${baseEndPoint}`
+        document.getElementById(id).remove();
     } else {
         buildErrorList(await response.json());
     }
 }
 
-const buildUserList = (users) => {
+const replaceUserCard = (user) => {
+    document.getElementById(user.id).remove();
+    userList.insertAdjacentHTML("afterbegin", fillUserList(user));
+}
+
+const buildUserListAppend = (users) => {
     userList.insertAdjacentHTML("beforeend", users.map(fillUserList).join(""));
 }
 
-const buildUserListBySearch = (users) => {
+const buildUserListReplace = (users) => {
     userList.innerHTML = users.map(fillUserList).join("");
 }
 
 const fillUserList = ({id, firstName, lastName, birthDate, email, phone, address}) => {
     return `
-    <li class="list-item">
+    <li class="list-item" id="${id}">
         <p class="item-id">${id}</p>
         <p class="item-el">${firstName} ${lastName}</p>
         <p class="item-el">${birthDate}</p>
@@ -183,7 +185,7 @@ async function getUsers() {
     let response = await fetch(url, params);
 
     if (response.ok) {
-        buildUserList(await response.json());
+        buildUserListAppend(await response.json());
     } else {
         buildErrorList(await response.json());
     }
@@ -191,6 +193,7 @@ async function getUsers() {
 
 const buildErrorList = (errResp) => {
     if (!errResp) return;
+    errorBox.style.display = "block";
     // entity validations errors
     if (typeof errResp?.errors === 'object' && !Array.isArray(errResp.errors)) {
             Object.keys(errResp.errors).forEach(key => {
@@ -223,8 +226,6 @@ const clearFormFields = () => {
     });
 }
 
-
-
 spanCloseModal.onclick = function() {
     modal.style.display = "none";
     clearFormFields();
@@ -240,6 +241,5 @@ window.onclick = function(event) {
         clearFormFields();
     }
 }
-
 
 getUsers().then();
