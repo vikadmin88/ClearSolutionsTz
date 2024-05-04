@@ -88,10 +88,9 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean isUserAgeValid(UserDto user) {
-        int ageRestrict = userRestrictedAge;
         int userAge = Period.between(user.getBirthDate(), LocalDate.now()).getYears();
-        log.info("Checking user age. min age {} User age: {}", ageRestrict, userAge);
-        return userAge >= ageRestrict;
+        log.info("Checking user age. min age {} User age: {}", userRestrictedAge, userAge);
+        return userAge >= userRestrictedAge;
     }
 
 }
