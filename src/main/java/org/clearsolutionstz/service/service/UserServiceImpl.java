@@ -8,6 +8,7 @@ import org.clearsolutionstz.service.dto.UserDto;
 import org.clearsolutionstz.service.exception.UserDataRestrictionException;
 import org.clearsolutionstz.service.exception.UserNotFoundException;
 import org.clearsolutionstz.service.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final Environment env;
+    @Value("${user.settings.restrictedAge}")
+    private int userRestrictedAge;
 
     @Override
     public List<UserDto> listAll() {
@@ -46,7 +49,7 @@ public class UserServiceImpl implements UserService {
     public UserDto add(UserDto user) throws UserDataRestrictionException {
         log.info("Adding user: {}", user);
         if (!isUserAgeValid(user)) {
-            throw new UserDataRestrictionException("User age less than required");
+            throw new UserDataRestrictionException("Required minimum user age:: " + userRestrictedAge);
         }
         User entity = userMapper.toUserEntity(user);
         entity.setId(null);
@@ -60,7 +63,7 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("Not found user Id: " + user.getId());
         }
         if (!isUserAgeValid(user)) {
-            throw new UserDataRestrictionException("User age less than required");
+            throw new UserDataRestrictionException("Required minimum user age:: " + userRestrictedAge);
         }
         userRepository.save(userMapper.toUserEntity(user));
     }
@@ -85,7 +88,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean isUserAgeValid(UserDto user) {
-        int ageRestrict = Integer.parseInt(Objects.requireNonNull(env.getProperty("user.settings.age")));
+        int ageRestrict = userRestrictedAge;
         int userAge = Period.between(user.getBirthDate(), LocalDate.now()).getYears();
         log.info("Checking user age. min age {} User age: {}", ageRestrict, userAge);
         return userAge >= ageRestrict;
